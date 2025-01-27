@@ -116,9 +116,27 @@ public class Login extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        navigateToMain();
+                        FirebaseUser user = task.getResult().getUser();
+                        if (user != null) {
+                            // Actualizar último inicio de sesión
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            Map<String, Object> updates = new HashMap<>();
+                            updates.put("lastLogin", FieldValue.serverTimestamp());
+                            
+                            db.collection("users")
+                                .document(user.getUid())
+                                .update(updates)
+                                .addOnSuccessListener(aVoid -> navigateToMain())
+                                .addOnFailureListener(e -> {
+                                    Log.e(TAG, "Error al actualizar último inicio de sesión", e);
+                                    navigateToMain();
+                                });
+                        } else {
+                            navigateToMain();
+                        }
                     } else {
-                        Toast.makeText(this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Error: " + task.getException().getMessage(), 
+                            Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -132,10 +150,42 @@ public class Login extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show();
-                        navigateToMain();
+                        FirebaseUser user = task.getResult().getUser();
+                        if (user != null) {
+                            // Crear documento del usuario en Firestore
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            Map<String, Object> userData = new HashMap<>();
+                            userData.put("email", user.getEmail());
+                            userData.put("displayName", user.getEmail().split("@")[0]);
+                            userData.put("createdAt", FieldValue.serverTimestamp());
+                            userData.put("lastLogin", FieldValue.serverTimestamp());
+
+                            // Crear la estructura de datos del usuario
+                            db.collection("users")
+                                .document(user.getUid())
+                                .set(userData)
+                                .addOnSuccessListener(aVoid -> {
+                                    // Crear la colección de pokémon capturados para el usuario
+                                    db.collection("pokemon_capturados")
+                                        .document(user.getUid())
+                                        .set(new HashMap<>())
+                                        .addOnSuccessListener(aVoid2 -> {
+                                            Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show();
+                                            navigateToMain();
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Log.e(TAG, "Error al crear colección de pokémon", e);
+                                            navigateToMain();
+                                        });
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e(TAG, "Error al crear documento de usuario", e);
+                                    navigateToMain();
+                                });
+                        }
                     } else {
-                        Toast.makeText(this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Error: " + task.getException().getMessage(), 
+                            Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -148,8 +198,17 @@ public class Login extends AppCompatActivity {
                     .build();
             
             mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-            signInLauncher.launch(signInIntent);
+            
+            // Desconectar cualquier cuenta previa
+            mGoogleSignInClient.signOut().addOnCompleteListener(task -> {
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                signInLauncher.launch(signInIntent);
+            }).addOnFailureListener(e -> {
+                Log.e(TAG, "Error al cerrar sesión previa: ", e);
+                // Intentar iniciar sesión de todos modos
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                signInLauncher.launch(signInIntent);
+            });
         } catch (Exception e) {
             Log.e(TAG, "Error en signIn: ", e);
             Toast.makeText(this, "Error al iniciar sesión con Google", Toast.LENGTH_SHORT).show();
@@ -218,16 +277,21 @@ public class Login extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         try {
-            // Verificar si hay un usuario ya autenticado
-            FirebaseUser currentUser = mAuth.getCurrentUser();
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
             if (currentUser != null) {
-                Log.d(TAG, "Usuario detectado en onStart: " + currentUser.getEmail());
-                // Navegar a MainActivity solo si no estamos ya en proceso de cierre de sesión
-                if (!isFinishing()) {
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
+                // El usuario ya está autenticado, actualizar último acceso
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("lastLogin", FieldValue.serverTimestamp());
+                
+                db.collection("users")
+                    .document(currentUser.getUid())
+                    .update(updates)
+                    .addOnSuccessListener(aVoid -> navigateToMain())
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Error al actualizar último acceso", e);
+                        navigateToMain();
+                    });
             }
         } catch (Exception e) {
             Log.e(TAG, "Error en onStart: ", e);

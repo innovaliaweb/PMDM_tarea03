@@ -93,21 +93,34 @@ public class PokedexFragment extends Fragment {
         db.collection("pokemon_capturados")
             .document(userId)
             .collection("pokemons")
-            .get()
-            .addOnSuccessListener(documents -> {
+            .addSnapshotListener((value, error) -> {
+                if (error != null) {
+                    Log.e("PokedexFragment", "Error escuchando cambios: ", error);
+                    return;
+                }
+
                 if (!isAdded()) return;
 
                 pokemonCapturados.clear();
-                for (DocumentSnapshot doc : documents) {
-                    String pokemonName = doc.getId();
-                    if (pokemonName != null) {
-                        pokemonCapturados.add(pokemonName);
+                if (value != null) {
+                    for (DocumentSnapshot doc : value) {
+                        String pokemonName = doc.getId();
+                        if (pokemonName != null) {
+                            pokemonCapturados.add(pokemonName);
+                        }
                     }
                 }
-                cargarListaPokemon();
-            })
-            .addOnFailureListener(e -> {
-                if (isAdded()) {
+                
+                // Actualizar el estado de captura en el adaptador
+                if (adapter != null) {
+                    for (Pokemon pokemon : adapter.getPokemonList()) {
+                        pokemon.setCapturado(pokemonCapturados.contains(pokemon.getName()));
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+                
+                // Si es la primera carga, cargar la lista de Pokémon
+                if (adapter == null || adapter.getItemCount() == 0) {
                     cargarListaPokemon();
                 }
             });

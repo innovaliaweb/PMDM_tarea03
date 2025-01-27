@@ -65,4 +65,6 @@
     <string name="apply_language">Aplicar cambios de idioma</string>
 
     <string name="unknown">Desconocido</string>
+
+    <string name="login_logo_description">Logo de Pokémon</string>
 </resources>

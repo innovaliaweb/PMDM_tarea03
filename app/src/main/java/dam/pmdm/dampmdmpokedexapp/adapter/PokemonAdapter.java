@@ -152,6 +152,10 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.PokemonV
         }
     }
 
+    public List<Pokemon> getPokemonList() {
+        return new ArrayList<>(pokemonList);
+    }
+
     static class PokemonViewHolder extends RecyclerView.ViewHolder {
         ImageView pokemonImage;
         TextView pokemonName;

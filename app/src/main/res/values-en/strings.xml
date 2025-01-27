@@ -43,6 +43,7 @@
     <string name="pokemon_height">Height: %1$d m</string>
     <string name="pokemon_weight">Weight: %1$d kg</string>
     <string name="apply_language">Apply language changes</string>
+    <string name="login_logo_description">Pokémon logo</string>
 
 
     <string-array name="idiomas">
