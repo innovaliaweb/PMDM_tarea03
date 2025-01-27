@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pokedex App</string>
+    <string name="app_id">462130703274</string>
+    <string name="default_web_client_id">462130703274-kj6q6bne69avp0dhkqfumlc63qimcjqo.apps.googleusercontent.com</string>
+
+    <string name="settings_title">Ajustes</string>
+    <string name="enable_pokemon_deletion">Habilitar eliminación de Pokémon</string>
+    <string name="select_language">Seleccionar idioma</string>
+    <string name="about">Acerca de</string>
+    <string name="logout">Cerrar sesión</string>
+    <string name="about_title">Acerca de</string>
+    <string name="about_message">Pokédex App\nDesarrollado por Manuel Jesús Torralbo Rodriguez</string>
+    <string name="pokemon_captured">¡Pokémon capturado!</string>
+    <string name="error_loading">Error al cargar</string>
+    <string name="pokemon_deleted">Pokémon eliminado</string>
+    <string name="error_deleting">Error al eliminar el Pokémon</string>
+    <string name="error_loading_captured_pokemon">Error al cargar pokémon capturados</string>
+    <string name="error_loading_pokedex">Error al cargar la Pokédex</string>
+    <string name="pokemon_already_captured">¡Ya has capturado este Pokémon!</string>
+    <string name="error_capturing">Error al capturar el Pokémon</string>
+    <string name="error_capturing_pokemon">Error capturing Pokémon</string>
+    <string name="error_saving">Error al guardar el Pokémon</string>
+    <string name="error_saving_pokemon">Error al guardar el Pokémon</string>
+    <string name="error_user_not_authenticated">Error: Usuario no autenticado</string>
+    
+    <array name="languages">
+        <item>Español</item>
+        <item>English</item>
+    </array>
+
+    <string name="pokedex_title">Pokédex</string>
+    <string name="captured_title">Pokémon Capturados</string>
+
+
+
+    <string-array name="idiomas">
+        <item>Español</item>
+        <item>English</item>
+    </string-array>
+
+    <string name="pokemon_details_title">Detalles del Pokémon</string>
+
+    <string name="delete_confirmation_title">Confirmar eliminación</string>
+    <string name="delete_confirmation_message">¿Estás seguro de que quieres eliminar este Pokémon?</string>
+    <string name="delete">Eliminar</string>
+
+    <string name="nav_pokedex">Pokédex</string>
+    <string name="nav_captured">Capturados</string>
+    <string name="nav_settings">Ajustes</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="nav_header_title">Pokédex App</string>
+    <string name="nav_header_subtitle">Entrenador Pokémon</string>
+    <string name="nav_header_desc">Encabezado de navegación</string>
+
+    <string name="tab_pokedex">Pokédex</string>
+    <string name="tab_capturados">Capturados</string>
+    <string name="tab_settings">Ajustes</string>
+
+    <string name="pokemon_image">Imagen del Pokémon</string>
+    <string name="pokemon_detail_stats">Estadísticas del Pokémon</string>
+    <string name="pokemon_height">Altura: %1$d m</string>
+    <string name="pokemon_weight">Peso: %1$d kg</string>
+
+    <string name="apply_language">Aplicar cambios de idioma</string>
+
+    <string name="unknown">Desconocido</string>
+</resources>

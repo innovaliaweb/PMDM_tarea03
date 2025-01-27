@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "462130703274",
+    "firebase_url": "https://dam-pmd-tarea3-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "dam-pmd-tarea3",
+    "storage_bucket": "dam-pmd-tarea3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:462130703274:android:277c772106818e7e2619d3",
+        "android_client_info": {
+          "package_name": "dam.pmdm.dampmdmpokedexapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "462130703274-uncaq7kpn6mtsc49or18tk8g415nik85.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dam.pmdm.dampmdmpokedexapp",
+            "certificate_hash": "2d9da99ef680b0eba0704c53479c9e06cffa4ef0"
+          }
+        },
+        {
+          "client_id": "462130703274-kj6q6bne69avp0dhkqfumlc63qimcjqo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQVlQblhc3l3plVyyx5t7tuIvJruzmIzQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "462130703274-kj6q6bne69avp0dhkqfumlc63qimcjqo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
