@@ -164,6 +164,14 @@ public class CapturadosFragment extends Fragment {
 
     private void cargarPokemonCapturados() {
         try {
+            // Limpiar la lista actual
+            if (listaPokemon != null) {
+                listaPokemon.clear();
+                if (adapter != null) {
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
             if (currentUser == null || !isAdded()) return;
 
@@ -190,7 +198,6 @@ public class CapturadosFragment extends Fragment {
                                 pokemon.setId(doc.getLong("id") != null ? doc.getLong("id").intValue() : 0);
                                 pokemon.setFotoPokemon(doc.getString("fotoPokemon"));
                                 
-                                // Manejo seguro de los tipos
                                 List<String> tipos = (List<String>) doc.get("tipos");
                                 pokemon.setTypes(tipos != null ? tipos : new ArrayList<>());
                                 

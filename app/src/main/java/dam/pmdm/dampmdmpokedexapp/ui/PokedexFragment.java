@@ -64,9 +64,9 @@ public class PokedexFragment extends Fragment {
 
             // Crear instancia de Retrofit directamente
             Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://pokeapi.co/api/v2/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+                    .baseUrl("https://pokeapi.co/api/v2/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
 
             api = retrofit.create(PokeApiService.class);
 
@@ -91,39 +91,39 @@ public class PokedexFragment extends Fragment {
 
         String userId = currentUser.getUid();
         db.collection("pokemon_capturados")
-            .document(userId)
-            .collection("pokemons")
-            .addSnapshotListener((value, error) -> {
-                if (error != null) {
-                    Log.e("PokedexFragment", "Error escuchando cambios: ", error);
-                    return;
-                }
+                .document(userId)
+                .collection("pokemons")
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Log.e("PokedexFragment", "Error escuchando cambios: ", error);
+                        return;
+                    }
 
-                if (!isAdded()) return;
+                    if (!isAdded()) return;
 
-                pokemonCapturados.clear();
-                if (value != null) {
-                    for (DocumentSnapshot doc : value) {
-                        String pokemonName = doc.getId();
-                        if (pokemonName != null) {
-                            pokemonCapturados.add(pokemonName);
+                    pokemonCapturados.clear();
+                    if (value != null) {
+                        for (DocumentSnapshot doc : value) {
+                            String pokemonName = doc.getId();
+                            if (pokemonName != null) {
+                                pokemonCapturados.add(pokemonName);
+                            }
                         }
                     }
-                }
-                
-                // Actualizar el estado de captura en el adaptador
-                if (adapter != null) {
-                    for (Pokemon pokemon : adapter.getPokemonList()) {
-                        pokemon.setCapturado(pokemonCapturados.contains(pokemon.getName()));
+
+                    // Actualizar el estado de captura en el adaptador
+                    if (adapter != null) {
+                        for (Pokemon pokemon : adapter.getPokemonList()) {
+                            pokemon.setCapturado(pokemonCapturados.contains(pokemon.getName()));
+                        }
+                        adapter.notifyDataSetChanged();
                     }
-                    adapter.notifyDataSetChanged();
-                }
-                
-                // Si es la primera carga, cargar la lista de Pokémon
-                if (adapter == null || adapter.getItemCount() == 0) {
-                    cargarListaPokemon();
-                }
-            });
+
+                    // Si es la primera carga, cargar la lista de Pokémon
+                    if (adapter == null || adapter.getItemCount() == 0) {
+                        cargarListaPokemon();
+                    }
+                });
     }
 
     private void cargarListaPokemon() {
@@ -187,16 +187,16 @@ public class PokedexFragment extends Fragment {
                 public void onFailure(Call<PokemonDetails> call, Throwable t) {
                     if (getContext() != null) {
                         Toast.makeText(getContext(),
-                            getString(R.string.error_capturing_pokemon),
-                            Toast.LENGTH_SHORT).show();
+                                getString(R.string.error_capturing_pokemon),
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
             });
         } else {
             if (getContext() != null) {
                 Toast.makeText(getContext(),
-                    getString(R.string.pokemon_already_captured),
-                    Toast.LENGTH_SHORT).show();
+                        getString(R.string.pokemon_already_captured),
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -237,17 +237,17 @@ public class PokedexFragment extends Fragment {
         pokemonData.put("altura", pokemonDetails.getHeight());
 
         db.collection("pokemon_capturados")
-            .document(userId)
-            .collection("pokemons")
-            .document(pokemonDetails.getName())
-            .set(pokemonData)
-            .addOnSuccessListener(aVoid -> {
-                mostrarToast(getString(R.string.pokemon_captured));
-                pokemonCapturados.add(pokemonDetails.getName());
-                adapter.marcarComoCapturado(pokemonDetails.getName());
-            })
-            .addOnFailureListener(e -> {
-                mostrarToast(getString(R.string.error_saving_pokemon));
-            });
+                .document(userId)
+                .collection("pokemons")
+                .document(pokemonDetails.getName())
+                .set(pokemonData)
+                .addOnSuccessListener(aVoid -> {
+                    mostrarToast(getString(R.string.pokemon_captured));
+                    pokemonCapturados.add(pokemonDetails.getName());
+                    adapter.marcarComoCapturado(pokemonDetails.getName());
+                })
+                .addOnFailureListener(e -> {
+                    mostrarToast(getString(R.string.error_saving_pokemon));
+                });
     }
 }

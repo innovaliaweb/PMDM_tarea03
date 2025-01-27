@@ -53,7 +53,7 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.PokemonV
     @Override
     public void onBindViewHolder(@NonNull PokemonViewHolder holder, int position) {
         Pokemon pokemon = pokemonList.get(position);
-        
+
         // Capitalizar el nombre del Pokémon
         String pokemonName = pokemon.getName();
         if (pokemonName != null && !pokemonName.isEmpty()) {
@@ -82,15 +82,15 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.PokemonV
         String imageUrl = pokemon.getFotoPokemon();
         if (imageUrl == null || imageUrl.isEmpty()) {
             // Si no hay foto, usar la URL basada en el ID
-            imageUrl = String.format("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/%d.png", 
-                                   pokemon.getId());
+            imageUrl = String.format("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/%d.png",
+                    pokemon.getId());
         }
-        
+
         Picasso.get()
-               .load(imageUrl)
-               .placeholder(R.drawable.ic_pokeball)
-               .error(R.drawable.ic_pokeball)
-               .into(holder.pokemonImage);
+                .load(imageUrl)
+                .placeholder(R.drawable.ic_pokeball)
+                .error(R.drawable.ic_pokeball)
+                .into(holder.pokemonImage);
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
@@ -119,7 +119,7 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.PokemonV
             @Override
             public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
                 return pokemonList.get(oldItemPosition).getNombre().equals(
-                    newList.get(newItemPosition).getNombre());
+                        newList.get(newItemPosition).getNombre());
             }
 
             @Override
@@ -127,7 +127,7 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.PokemonV
                 Pokemon oldPokemon = pokemonList.get(oldItemPosition);
                 Pokemon newPokemon = newList.get(newItemPosition);
                 return oldPokemon.getNombre().equals(newPokemon.getNombre()) &&
-                       oldPokemon.isCapturado() == newPokemon.isCapturado();
+                        oldPokemon.isCapturado() == newPokemon.isCapturado();
             }
         });
         pokemonList = new ArrayList<>(newList);
@@ -136,14 +136,14 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.PokemonV
 
     public void marcarComoCapturado(String nombrePokemon) {
         if (nombrePokemon == null) return;
-        
+
         for (int i = 0; i < pokemonList.size(); i++) {
             Pokemon pokemon = pokemonList.get(i);
             String nombre = pokemon.getName();
             if (nombre == null) {
                 nombre = pokemon.getNombre();
             }
-            
+
             if (nombrePokemon.equals(nombre)) {
                 pokemon.setCapturado(true);
                 notifyItemChanged(i);

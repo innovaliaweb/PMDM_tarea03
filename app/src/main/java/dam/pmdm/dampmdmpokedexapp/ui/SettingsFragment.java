@@ -37,6 +37,7 @@ import java.util.Locale;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SettingsFragment extends Fragment {
     private SharedPreferences sharedPreferences;
@@ -162,10 +163,15 @@ public class SettingsFragment extends Fragment {
         try {
             if (!isAdded() || getContext() == null) return;
 
+            // Limpiar SharedPreferences relacionadas con Pokémon
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove("allow_delete");
+            editor.apply();
+
             // Primero cerrar sesión de Firebase
             FirebaseAuth.getInstance().signOut();
 
-            // Luego cerrar sesión de Google de manera más segura
+            // Luego cerrar sesión de Google
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestEmail()
                     .build();
@@ -173,21 +179,16 @@ public class SettingsFragment extends Fragment {
             GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
             googleSignInClient.signOut()
                     .addOnCompleteListener(task -> {
-                        // Asegurarse de que el fragmento sigue adjunto
-                        if (isAdded() && getActivity() != null) {
-                            Intent intent = new Intent(getActivity(), Login.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            getActivity().finish();
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        if (isAdded()) {
-                            Toast.makeText(requireContext(), 
-                                "Error al cerrar sesión", 
-                                Toast.LENGTH_SHORT).show();
-                            Log.e("SettingsFragment", "Error en signOut", e);
-                        }
+                        // Limpiar la caché de Firestore
+                        FirebaseFirestore.getInstance().clearPersistence()
+                            .addOnCompleteListener(clearTask -> {
+                                if (isAdded() && getActivity() != null) {
+                                    Intent intent = new Intent(getActivity(), Login.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                    getActivity().finish();
+                                }
+                            });
                     });
         } catch (Exception e) {
             Log.e("SettingsFragment", "Error al cerrar sesión: ", e);

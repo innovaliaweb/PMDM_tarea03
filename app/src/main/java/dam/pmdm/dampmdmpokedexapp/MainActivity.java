@@ -46,35 +46,23 @@ public class MainActivity extends AppCompatActivity {
     private static boolean isFirstLaunch = true;
 
     @Override
-    protected void attachBaseContext(Context newBase) {
-        SharedPreferences sharedPreferences = newBase.getSharedPreferences("PokedexPrefs", Context.MODE_PRIVATE);
-        String savedLanguage = sharedPreferences.getString("selected_language", "es");
-        
-        Locale locale = new Locale(savedLanguage);
-        Configuration config = new Configuration();
-        config.setLocale(locale);
-        
-        Context context = newBase.createConfigurationContext(config);
-        super.attachBaseContext(context);
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        // Cargar y aplicar el idioma guardado antes de inflar la vista
+        // Cargar el idioma guardado
         SharedPreferences sharedPreferences = getSharedPreferences("PokedexPrefs", Context.MODE_PRIVATE);
         String savedLanguage = sharedPreferences.getString("selected_language", "es");
         
+        // Aplicar el idioma guardado
         Locale locale = new Locale(savedLanguage);
         Locale.setDefault(locale);
         
-        Configuration config = getBaseContext().getResources().getConfiguration();
+        Configuration config = getResources().getConfiguration();
         config.setLocale(locale);
         
-        Context context = createConfigurationContext(config);
+        createConfigurationContext(config);
         getResources().updateConfiguration(config, getResources().getDisplayMetrics());
-
+        
         setContentView(R.layout.activity_main);
 
         viewPager = findViewById(R.id.viewPager);
@@ -165,19 +153,29 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-         if (item.getItemId() == R.id.action_settings) {
-            viewPager.setCurrentItem(2); // Cambiar al fragmento de configuración
+        if (item.getItemId() == R.id.action_settings) {
+            viewPager.setCurrentItem(2);
             return true;
         } else if (item.getItemId() == R.id.action_logout) {
+            // Limpiar SharedPreferences
+            SharedPreferences sharedPreferences = getSharedPreferences("PokedexPrefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove("allow_delete");
+            editor.apply();
+
+            // Cerrar sesión de Firebase
             FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(this, Login.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-          
+
+            // Limpiar la caché de Firestore
+            FirebaseFirestore.getInstance().clearPersistence()
+                .addOnCompleteListener(task -> {
+                    Intent intent = new Intent(this, Login.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                });
             return true;
         }
         return super.onOptionsItemSelected(item);
-
-
     }
 }

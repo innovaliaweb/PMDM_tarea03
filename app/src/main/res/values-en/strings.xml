@@ -44,7 +44,7 @@
     <string name="pokemon_weight">Weight: %1$d kg</string>
     <string name="apply_language">Apply language changes</string>
     <string name="login_logo_description">Pokémon logo</string>
-
+    <string name="error_loading_pokemon">Error loading Pokémon</string>
 
     <string-array name="idiomas">
         <item>Spanish</item>

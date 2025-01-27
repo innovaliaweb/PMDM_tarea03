@@ -67,4 +67,5 @@
     <string name="unknown">Desconocido</string>
 
     <string name="login_logo_description">Logo de Pokémon</string>
+    <string name="error_loading_pokemon">Error al cargar los Pokémon</string>
 </resources>
